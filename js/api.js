@@ -1,141 +1,134 @@
-// API configuration
-const API_BASE_URL = '/api';
-
-// API service class
-class ApiService {
-    constructor() {
-        this.token = localStorage.getItem('token');
+// API Configuration
+const API_CONFIG = {
+    // Use environment-based API URL
+    BASE_URL: window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000/api'
+        : 'https://ngo-backend-api.onrender.com/api',
+    HEADERS: {
+        'Content-Type': 'application/json'
     }
+};
 
-    // Set authentication token
-    setToken(token) {
-        this.token = token;
-        localStorage.setItem('token', token);
+// Add auth token to headers if available
+const addAuthToken = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        API_CONFIG.HEADERS['Authorization'] = `Bearer ${token}`;
     }
+};
 
-    // Clear authentication token
-    clearToken() {
-        this.token = null;
-        localStorage.removeItem('token');
+// Handle API errors
+const handleResponse = async (response) => {
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong');
     }
+    return data;
+};
 
-    // Generic fetch method
-    async fetch(endpoint, options = {}) {
-        const headers = {
-            'Content-Type': 'application/json',
-            ...options.headers
-        };
-
-        if (this.token) {
-            headers['Authorization'] = `Bearer ${this.token}`;
-        }
-
-        try {
-            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-                ...options,
-                headers
-            });
-
-            if (response.status === 401) {
-                this.clearToken();
-                window.location.href = '/pages/login.html';
-                return null;
+// API endpoints
+const API = {
+    // Auth endpoints
+    auth: {
+        login: async (credentials) => {
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: API_CONFIG.HEADERS,
+                    body: JSON.stringify(credentials)
+                });
+                const data = await handleResponse(response);
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                }
+                return data;
+            } catch (error) {
+                console.error('Login error:', error);
+                throw error;
             }
-
-            const data = await response.json();
-            return { ok: response.ok, data };
-        } catch (error) {
-            console.error('API Error:', error);
-            return { ok: false, error: error.message };
+        },
+        register: async (userData) => {
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/auth/signup`, {
+                    method: 'POST',
+                    headers: API_CONFIG.HEADERS,
+                    body: JSON.stringify(userData)
+                });
+                const data = await handleResponse(response);
+                return data;
+            } catch (error) {
+                console.error('Registration error:', error);
+                throw error;
+            }
+        },
+        logout: () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/pages/login.html';
+        },
+        getCurrentUser: () => {
+            const user = localStorage.getItem('user');
+            return user ? JSON.parse(user) : null;
+        }
+    },
+    
+    // Donations endpoints
+    donations: {
+        getAll: async () => {
+            try {
+                addAuthToken();
+                const response = await fetch(`${API_CONFIG.BASE_URL}/donations`, {
+                    headers: API_CONFIG.HEADERS
+                });
+                return handleResponse(response);
+            } catch (error) {
+                console.error('Get donations error:', error);
+                throw error;
+            }
+        },
+        create: async (donationData) => {
+            try {
+                addAuthToken();
+                const response = await fetch(`${API_CONFIG.BASE_URL}/donations`, {
+                    method: 'POST',
+                    headers: API_CONFIG.HEADERS,
+                    body: JSON.stringify(donationData)
+                });
+                return handleResponse(response);
+            } catch (error) {
+                console.error('Create donation error:', error);
+                throw error;
+            }
+        },
+        update: async (id, donationData) => {
+            try {
+                addAuthToken();
+                const response = await fetch(`${API_CONFIG.BASE_URL}/donations/${id}`, {
+                    method: 'PUT',
+                    headers: API_CONFIG.HEADERS,
+                    body: JSON.stringify(donationData)
+                });
+                return handleResponse(response);
+            } catch (error) {
+                console.error('Update donation error:', error);
+                throw error;
+            }
+        },
+        delete: async (id) => {
+            try {
+                addAuthToken();
+                const response = await fetch(`${API_CONFIG.BASE_URL}/donations/${id}`, {
+                    method: 'DELETE',
+                    headers: API_CONFIG.HEADERS
+                });
+                return handleResponse(response);
+            } catch (error) {
+                console.error('Delete donation error:', error);
+                throw error;
+            }
         }
     }
+};
 
-    // Auth API methods
-    async login(email, password) {
-        return this.fetch('/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ email, password })
-        });
-    }
-
-    async signup(userData) {
-        return this.fetch('/auth/signup', {
-            method: 'POST',
-            body: JSON.stringify(userData)
-        });
-    }
-
-    // Dashboard API methods
-    async getDashboardStats() {
-        return this.fetch('/dashboard/stats');
-    }
-
-    // Members API methods
-    async getMembers() {
-        return this.fetch('/members');
-    }
-
-    async addMember(memberData) {
-        return this.fetch('/members', {
-            method: 'POST',
-            body: JSON.stringify(memberData)
-        });
-    }
-
-    async updateMember(id, memberData) {
-        return this.fetch(`/members/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(memberData)
-        });
-    }
-
-    async deleteMember(id) {
-        return this.fetch(`/members/${id}`, {
-            method: 'DELETE'
-        });
-    }
-
-    // Donations API methods
-    async getDonations() {
-        return this.fetch('/donations');
-    }
-
-    async addDonation(donationData) {
-        return this.fetch('/donations', {
-            method: 'POST',
-            body: JSON.stringify(donationData)
-        });
-    }
-
-    async getDonationStats() {
-        return this.fetch('/donations/stats');
-    }
-
-    // Events API methods
-    async getEvents() {
-        return this.fetch('/events');
-    }
-
-    async addEvent(eventData) {
-        return this.fetch('/events', {
-            method: 'POST',
-            body: JSON.stringify(eventData)
-        });
-    }
-
-    async updateEvent(id, eventData) {
-        return this.fetch(`/events/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(eventData)
-        });
-    }
-
-    async deleteEvent(id) {
-        return this.fetch(`/events/${id}`, {
-            method: 'DELETE'
-        });
-    }
-}
-
-// Create and export API service instance
-const api = new ApiService();
+export default API;

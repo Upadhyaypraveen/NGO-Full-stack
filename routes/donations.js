@@ -3,9 +3,6 @@ const router = express.Router();
 const Donation = require('../models/Donation');
 const { authenticate, authorize } = require('../middleware/auth');
 
-// @route   GET api/donations
-// @desc    Get all donations
-// @access  Private
 router.get('/', async (req, res) => {
     try {
         const donations = await Donation.find().sort({ date: -1 });
