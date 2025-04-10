@@ -4,8 +4,8 @@ A comprehensive web application for managing Non-Governmental Organizations (NGO
 
 ## 🌐 Live Demo
 
-- Frontend: [https://upadhyaypraveen.github.io/NGO-Full-stack/](https://upadhyaypraveen.github.io/NGO-Full-stack/)
-- Backend API: [https://ngo-backend-api.onrender.com](https://ngo-backend-api.onrender.com)
+- Demo: [https://upadhyaypraveen.github.io/NGO-Full-stack/](https://upadhyaypraveen.github.io/NGO-Full-stack/)
+
 
 ## ✨ Features
 
