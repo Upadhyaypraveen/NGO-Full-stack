@@ -47,7 +47,7 @@ A comprehensive web application for managing Non-Governmental Organizations (NGO
 
 ### Deployment
 - Frontend: GitHub Pages
-- Backend: Render
+- Backend: Vercel
 - Database: MongoDB Atlas
 
 ## 🚀 Getting Started
