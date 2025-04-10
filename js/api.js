@@ -19,11 +19,11 @@ const addAuthToken = () => {
 
 // Handle API errors
 const handleResponse = async (response) => {
+    const data = await response.json();
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Something went wrong');
+        throw new Error(data.message || 'Something went wrong');
     }
-    return response.json();
+    return data;
 };
 
 // API endpoints
@@ -50,12 +50,13 @@ const API = {
         },
         register: async (userData) => {
             try {
-                const response = await fetch(`${API_CONFIG.BASE_URL}/auth/register`, {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/auth/signup`, {
                     method: 'POST',
                     headers: API_CONFIG.HEADERS,
                     body: JSON.stringify(userData)
                 });
-                return handleResponse(response);
+                const data = await handleResponse(response);
+                return data;
             } catch (error) {
                 console.error('Registration error:', error);
                 throw error;
@@ -64,7 +65,7 @@ const API = {
         logout: () => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '/login';
+            window.location.href = '/pages/login.html';
         },
         getCurrentUser: () => {
             const user = localStorage.getItem('user');
