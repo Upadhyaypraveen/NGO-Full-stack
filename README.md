@@ -1,29 +1,61 @@
 # NGO Management System
 
-A comprehensive web application for managing Non-Governmental Organizations (NGOs), including member management, donation tracking, and event organization.
+A comprehensive web application for managing Non-Governmental Organizations (NGOs), streamlining operations, and enhancing organizational efficiency.
 
-## Features
+## 🌐 Live Demo
 
-- User Authentication (Login/Signup)
-- Member Management
-- Donation Tracking
-- Event Management
-- Dashboard with Statistics
-- Responsive Design
+- Frontend: [https://upadhyaypraveen.github.io/NGO-Full-stack/](https://upadhyaypraveen.github.io/NGO-Full-stack/)
+- Backend API: [https://ngo-backend-api.onrender.com](https://ngo-backend-api.onrender.com)
 
-## Tech Stack
+## ✨ Features
 
-- Frontend: HTML, CSS, JavaScript, Bootstrap 5
-- Backend: Node.js, Express.js
-- Database: MongoDB
-- Authentication: JWT
+- 👥 **Member Management**
+  - Track member information
+  - Manage membership status
+  - Monitor member contributions
 
-## Installation
+- 💰 **Donation Tracking**
+  - Record and manage donations
+  - Generate donation reports
+  - Track payment methods
+  - Monitor recurring donations
+
+- 📅 **Event Management**
+  - Create and manage events
+  - Track event attendance
+  - Schedule notifications
+
+- 📊 **Dashboard & Analytics**
+  - Visual data representation
+  - Financial insights
+  - Member statistics
+  - Donation trends
+
+## 🛠️ Tech Stack
+
+### Frontend
+- HTML5, CSS3, JavaScript (ES6+)
+- Bootstrap 5 for responsive design
+- Chart.js for data visualization
+- Font Awesome for icons
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB (Database)
+- JWT for authentication
+
+### Deployment
+- Frontend: GitHub Pages
+- Backend: Render
+- Database: MongoDB Atlas
+
+## 🚀 Getting Started
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/ngo-management.git
-cd ngo-management
+git clone https://github.com/Upadhyaypraveen/NGO-Full-stack.git
+cd NGO-Full-stack
 ```
 
 2. Install dependencies:
@@ -31,60 +63,23 @@ cd ngo-management
 npm install
 ```
 
-3. Create a `.env` file in the root directory with the following variables:
-```
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/ngo_db
-JWT_SECRET=your_jwt_secret_here
-```
-
-4. Start the development server:
+3. Run locally:
 ```bash
 npm start
 ```
 
-## API Endpoints
+## 👥 Contributing
 
-### Authentication
-- POST /api/auth/register - Register a new user
-- POST /api/auth/login - Login user
-- GET /api/auth/me - Get current user
+Contributions are welcome! Feel free to:
+- Report bugs
+- Suggest new features
+- Submit pull requests
 
-### Members
-- GET /api/members - Get all members
-- POST /api/members - Create a new member
-- GET /api/members/:id - Get a specific member
-- PUT /api/members/:id - Update a member
-- DELETE /api/members/:id - Delete a member
+## 📝 License
 
-### Donations
-- GET /api/donations - Get all donations
-- POST /api/donations - Create a new donation
-- GET /api/donations/:id - Get a specific donation
-- PUT /api/donations/:id - Update a donation
-- DELETE /api/donations/:id - Delete a donation
+This project is licensed under the MIT License.
 
-### Events
-- GET /api/events - Get all events
-- POST /api/events - Create a new event
-- GET /api/events/:id - Get a specific event
-- PUT /api/events/:id - Update an event
-- DELETE /api/events/:id - Delete an event
+## 🤝 Contact
 
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-Your Name - your.email@example.com
-
-Project Link: [https://github.com/yourusername/ngo-management](https://github.com/yourusername/ngo-management) 
+Praveen Upadhyay
+- GitHub: [@Upadhyaypraveen](https://github.com/Upadhyaypraveen) 
