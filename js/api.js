@@ -3,7 +3,7 @@ const API_CONFIG = {
     // Use environment-based API URL
     BASE_URL: window.location.hostname === 'localhost' 
         ? 'http://localhost:5000/api'
-        : 'https://ngo-backend-api.onrender.com/api', // You'll need to update this with your actual deployed backend URL
+        : 'https://ngo-backend-api.onrender.com/api',
     HEADERS: {
         'Content-Type': 'application/json'
     }
@@ -17,63 +17,115 @@ const addAuthToken = () => {
     }
 };
 
+// Handle API errors
+const handleResponse = async (response) => {
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Something went wrong');
+    }
+    return response.json();
+};
+
 // API endpoints
 const API = {
     // Auth endpoints
     auth: {
         login: async (credentials) => {
-            addAuthToken();
-            const response = await fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
-                method: 'POST',
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(credentials)
-            });
-            return await response.json();
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: API_CONFIG.HEADERS,
+                    body: JSON.stringify(credentials)
+                });
+                const data = await handleResponse(response);
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                }
+                return data;
+            } catch (error) {
+                console.error('Login error:', error);
+                throw error;
+            }
         },
         register: async (userData) => {
-            const response = await fetch(`${API_CONFIG.BASE_URL}/auth/register`, {
-                method: 'POST',
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(userData)
-            });
-            return await response.json();
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: API_CONFIG.HEADERS,
+                    body: JSON.stringify(userData)
+                });
+                return handleResponse(response);
+            } catch (error) {
+                console.error('Registration error:', error);
+                throw error;
+            }
+        },
+        logout: () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        },
+        getCurrentUser: () => {
+            const user = localStorage.getItem('user');
+            return user ? JSON.parse(user) : null;
         }
     },
     
     // Donations endpoints
     donations: {
         getAll: async () => {
-            addAuthToken();
-            const response = await fetch(`${API_CONFIG.BASE_URL}/donations`, {
-                headers: API_CONFIG.HEADERS
-            });
-            return await response.json();
+            try {
+                addAuthToken();
+                const response = await fetch(`${API_CONFIG.BASE_URL}/donations`, {
+                    headers: API_CONFIG.HEADERS
+                });
+                return handleResponse(response);
+            } catch (error) {
+                console.error('Get donations error:', error);
+                throw error;
+            }
         },
         create: async (donationData) => {
-            addAuthToken();
-            const response = await fetch(`${API_CONFIG.BASE_URL}/donations`, {
-                method: 'POST',
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(donationData)
-            });
-            return await response.json();
+            try {
+                addAuthToken();
+                const response = await fetch(`${API_CONFIG.BASE_URL}/donations`, {
+                    method: 'POST',
+                    headers: API_CONFIG.HEADERS,
+                    body: JSON.stringify(donationData)
+                });
+                return handleResponse(response);
+            } catch (error) {
+                console.error('Create donation error:', error);
+                throw error;
+            }
         },
         update: async (id, donationData) => {
-            addAuthToken();
-            const response = await fetch(`${API_CONFIG.BASE_URL}/donations/${id}`, {
-                method: 'PUT',
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(donationData)
-            });
-            return await response.json();
+            try {
+                addAuthToken();
+                const response = await fetch(`${API_CONFIG.BASE_URL}/donations/${id}`, {
+                    method: 'PUT',
+                    headers: API_CONFIG.HEADERS,
+                    body: JSON.stringify(donationData)
+                });
+                return handleResponse(response);
+            } catch (error) {
+                console.error('Update donation error:', error);
+                throw error;
+            }
         },
         delete: async (id) => {
-            addAuthToken();
-            const response = await fetch(`${API_CONFIG.BASE_URL}/donations/${id}`, {
-                method: 'DELETE',
-                headers: API_CONFIG.HEADERS
-            });
-            return await response.json();
+            try {
+                addAuthToken();
+                const response = await fetch(`${API_CONFIG.BASE_URL}/donations/${id}`, {
+                    method: 'DELETE',
+                    headers: API_CONFIG.HEADERS
+                });
+                return handleResponse(response);
+            } catch (error) {
+                console.error('Delete donation error:', error);
+                throw error;
+            }
         }
     }
 };
